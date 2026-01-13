@@ -70,7 +70,7 @@ const techStackLogos: Logo[] = [
     invertInDark: true,
   },
   {
-    src: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/clerk/clerk-original.svg",
+    src: "https://images.clerk.dev/static/logo-light-mode-400x400.png",
     alt: "Clerk",
     name: "Clerk",
   },
@@ -133,7 +133,7 @@ export default function Skills() {
             </h2>
             <div className="h-px w-16 bg-linear-to-l from-transparent to-neutral-300 dark:to-neutral-700"></div>
           </div>
-          <p className="text-sm md:text-base text-neutral-500 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
+          <p className="text-sm md:text-base text-slate-600 dark:text-neutral-300 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
             Building modern, scalable applications with industry-leading frameworks
           </p>
         </div>

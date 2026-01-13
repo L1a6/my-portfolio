@@ -45,9 +45,10 @@ export default function LiquidMetalButton({
             background: #ffffff;
             border: 1.5px solid #e5e5e5;
             border-radius: 9999px;
-            cursor: pointer;
+            cursor: default;
             transition: all 0.3s ease;
             text-decoration: none;
+            pointer-events: none;
           }
 
           .dark .available-btn {
@@ -57,20 +58,20 @@ export default function LiquidMetalButton({
           }
 
           .available-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            border-color: #d4d4d4;
-            background: #fafafa;
+            transform: none;
+            box-shadow: none;
+            border-color: #e5e5e5;
+            background: #ffffff;
           }
 
           .dark .available-btn:hover {
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            border-color: #71717a;
-            background: #3f3f46;
+            box-shadow: none;
+            border-color: #52525b;
+            background: #27272a;
           }
 
           .available-btn:active {
-            transform: translateY(-1px);
+            transform: none;
           }
 
           .available-indicator {

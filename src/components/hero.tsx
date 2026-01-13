@@ -88,14 +88,14 @@ export default function Hero() {
 
         {/* Text Area */}
         <div className="mt-8 flex flex-col gap-2">
-          <h1 className="text-4xl font-bold text-neutral-900 dark:text-neutral-50" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '-0.02em' }}>
+          <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 dark:text-neutral-50" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '-0.02em' }}>
             Hi, I&apos;m {name}
           </h1>
-          <p className="text-2xl text-neutral-500 dark:text-neutral-400 font-semibold" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '-0.01em' }}>
+          <p className="text-xl md:text-2xl text-neutral-500 dark:text-neutral-400 font-semibold" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '-0.01em' }}>
             {title}
           </p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-2 text-sm text-neutral-500 dark:text-neutral-400 md:text-base" style={{ fontFamily: 'var(--font-inter)' }}>
+          <div className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-2 text-sm text-neutral-600 dark:text-neutral-300 md:text-base" style={{ fontFamily: 'var(--font-inter)' }}>
             {renderDescription()}
           </div>
         </div>
