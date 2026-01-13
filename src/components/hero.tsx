@@ -43,7 +43,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-[#f8f6fa] dark:bg-zinc-950 transition-colors duration-500">
+    <section className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-white dark:bg-zinc-950 transition-colors duration-500">
       {/* Background Effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-150 h-150">

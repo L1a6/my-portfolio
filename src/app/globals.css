@@ -41,3 +41,55 @@ body {
   transition: none !important;
 }
 
+/* Infinite scroll animation */
+@keyframes infinite-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll linear infinite;
+}
+
+/* Liquid Metal Text Effect */
+.liquid-metal-text {
+  background: linear-gradient(
+    90deg,
+    #1e293b 0%,
+    #475569 25%,
+    #64748b 50%,
+    #475569 75%,
+    #1e293b 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquid-shimmer 3s linear infinite;
+}
+
+.dark .liquid-metal-text {
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #ffffff 25%,
+    #f8fafc 50%,
+    #ffffff 75%,
+    #e2e8f0 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: liquid-shimmer 3s linear infinite;
+}
+
+@keyframes liquid-shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
