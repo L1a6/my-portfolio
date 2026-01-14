@@ -116,7 +116,7 @@ function LogoCloud({ className, logos, ...props }: LogoCloudProps) {
 
 export default function Skills() {
   return (
-    <section className="relative -mt-8 pb-12 bg-white dark:bg-zinc-950 transition-colors duration-500">
+    <section className="relative -mt-8 pb-3 bg-white dark:bg-zinc-950 transition-colors duration-500">
       {/* Page Boundaries - Thin vertical lines on large screens only */}
       <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-225 -translate-x-1/2 pointer-events-none">
         <div className="absolute left-0 top-0 bottom-0 w-px bg-neutral-200/60 dark:bg-neutral-800/60"></div>

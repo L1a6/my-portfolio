@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Home, Lightbulb, FolderGit2, BookOpen, Mail, Moon, Sun } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { gsap } from 'gsap';
 
 export default function FrostedNavbar() {
   const [activeNav, setActiveNav] = useState<string | null>(null);
@@ -12,21 +14,33 @@ export default function FrostedNavbar() {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
+  const navRef = useRef<HTMLDivElement>(null);
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (navRef.current) {
+      gsap.from(navRef.current, {
+        y: -100,
+        opacity: 0,
+        duration: 1.2,
+        ease: 'power4.out',
+        delay: 0.2
+      });
+    }
+  }, []);
+
   const navItems = [
     { id: 'home', icon: Home, label: 'Home', href: '/' },
     { id: 'skills', icon: Lightbulb, label: 'Skills', href: '/skills' },
-    { id: 'project', icon: FolderGit2, label: 'Project', href: '/#projects' },
-    { id: 'blogs', icon: BookOpen, label: 'Blogs', href: '/blogs' },
+    { id: 'project', icon: FolderGit2, label: 'Work', href: '/#projects' },
+    { id: 'blogs', icon: BookOpen, label: 'Blog', href: '/blogs' },
     { id: 'contact', icon: Mail, label: 'Contact', href: '/#contact' },
   ];
 
@@ -37,158 +51,174 @@ export default function FrostedNavbar() {
   };
 
   return (
-    <nav 
-      className={`
-        fixed top-0 left-0 right-0 z-50 
-        transition-all duration-500 ease-out
-        ${scrolled ? 'py-3' : 'py-6'}
-      `}
+    <motion.nav 
+      ref={navRef}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
+        scrolled ? 'py-2 md:py-3' : 'py-4 md:py-6'
+      }`}
     >
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-3 md:px-4">
         <div className="relative flex items-center justify-center">
-          {/* Liquid Glass Navbar - Apple Style */}
-          <div 
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className={`
-              relative rounded-full px-3 py-2.5
-              transition-all duration-500
+              relative rounded-full px-2 md:px-3 py-2 md:py-2.5
+              transition-all duration-700 ease-out
               ${isDark 
-                ? 'bg-white/8 backdrop-blur-2xl border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_0_0_1px_rgba(255,255,255,0.05)]' 
-                : 'bg-white/70 backdrop-blur-2xl border border-white/90 shadow-[0_8px_32px_rgba(31,38,135,0.08),inset_0_0_0_1px_rgba(255,255,255,0.9)]'
+                ? 'bg-black/40 backdrop-blur-3xl border border-white/10' 
+                : 'bg-white/60 backdrop-blur-3xl border border-black/5'
               }
               ${scrolled 
                 ? isDark 
-                  ? 'shadow-[0_16px_48px_rgba(0,0,0,0.5)]' 
-                  : 'shadow-[0_16px_48px_rgba(31,38,135,0.12)]' 
-                : ''
+                  ? 'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)]' 
+                  : 'shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)]'
+                : isDark 
+                  ? 'shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)]'
+                  : 'shadow-[0_8px_32px_-8px_rgba(0,0,0,0.08)]'
               }
             `}
           >
-            <div className="relative flex items-center gap-1.5">
-              {navItems.map((item) => {
+            <div className="relative flex items-center gap-0.5 md:gap-1">
+              {navItems.map((item, index) => {
                 const Icon = item.icon;
                 const isHovered = activeNav === item.id;
                 const isActive = isActiveRoute(item.href);
                 
                 return (
-                  <div key={item.id} className="relative">
+                  <motion.div 
+                    key={item.id}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * index, duration: 0.5 }}
+                    className="relative"
+                  >
                     <Link
                       href={item.href}
                       onMouseEnter={() => setActiveNav(item.id)}
                       onMouseLeave={() => setActiveNav(null)}
-                      className={`
-                        group relative flex items-center justify-center p-2.5 rounded-full
-                        transition-all duration-300 ease-out
-                        ${isDark ? 'text-gray-200' : 'text-gray-600'}
-                        ${isActive || isHovered
-                          ? isDark 
-                            ? 'bg-white/20 text-white shadow-lg' 
-                            : 'bg-white text-gray-900 shadow-[0_2px_8px_rgba(0,0,0,0.08)]'
-                          : isDark 
-                            ? 'hover:bg-white/10' 
-                            : 'hover:bg-white/80'
-                        }
-                      `}
-                      style={{
-                        transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
-                      }}
+                      className="relative group"
                     >
-                      <Icon 
-                        size={18} 
-                        className={`transition-all duration-300 ${isHovered || isActive ? 'scale-110' : 'group-hover:scale-105'}`}
-                        strokeWidth={2.5}
-                      />
-                    </Link>
-
-                    {/* Floating label tooltip */}
-                    <div 
-                      className={`
-                        absolute -bottom-12 left-1/2 -translate-x-1/2
-                        px-3 py-1.5 rounded-lg
-                        ${isDark 
-                          ? 'bg-zinc-800/95 text-white border border-zinc-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.4)]' 
-                          : 'bg-white text-gray-800 border border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.08)]'
-                        }
-                        backdrop-blur-xl
-                        transition-all duration-300 ease-out pointer-events-none
-                        ${isHovered
-                          ? 'opacity-100 translate-y-0' 
-                          : 'opacity-0 translate-y-2'
-                        }
-                      `}
-                    >
-                      <span className="whitespace-nowrap font-semibold text-xs tracking-tight">
-                        {item.label}
-                      </span>
-                      {/* Arrow */}
-                      <div 
+                      <motion.div
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
                         className={`
-                          absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45
-                          ${isDark 
-                            ? 'bg-zinc-800/95 border-l border-t border-zinc-700/50' 
-                            : 'bg-white border-l border-t border-gray-100'
+                          flex items-center justify-center p-2 md:p-2.5 rounded-full
+                          transition-all duration-500 ease-out relative overflow-hidden
+                          ${isDark ? 'text-neutral-300' : 'text-neutral-600'}
+                          ${isActive || isHovered
+                            ? isDark 
+                              ? 'bg-white/15 text-white' 
+                              : 'bg-black/8 text-black'
+                            : isDark 
+                              ? 'hover:bg-white/8' 
+                              : 'hover:bg-black/4'
                           }
                         `}
-                      />
-                    </div>
-                  </div>
+                      >
+                        <AnimatePresence>
+                          {isActive && (
+                            <motion.div
+                              layoutId="activeNavBg"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className={`absolute inset-0 rounded-full ${
+                                isDark 
+                                  ? 'bg-gradient-to-br from-white/20 to-white/10' 
+                                  : 'bg-gradient-to-br from-black/10 to-black/5'
+                              }`}
+                            />
+                          )}
+                        </AnimatePresence>
+                        
+                        <Icon 
+                          size={16}
+                          className={`relative z-10 transition-all duration-300 ${
+                            isHovered || isActive ? 'scale-110' : ''
+                          }`}
+                          strokeWidth={2.5}
+                        />
+                      </motion.div>
+
+                      <AnimatePresence>
+                        {isHovered && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.9 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none"
+                          >
+                            <div className={`
+                              px-2.5 py-1 rounded-full text-[10px] font-medium
+                              ${isDark 
+                                ? 'bg-white/10 text-white border border-white/20 backdrop-blur-xl' 
+                                : 'bg-black/80 text-white border border-black/10 backdrop-blur-xl'
+                              }
+                            `}
+                            style={{ fontFamily: 'var(--font-inter)' }}
+                            >
+                              {item.label}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </Link>
+                  </motion.div>
                 );
               })}
 
-              {/* Separator */}
-              <div className="relative mx-1 flex items-center justify-center h-7 w-[1.5px]">
-                <div 
-                  className={`
-                    absolute inset-0 rounded-full 
-                    ${isDark 
-                      ? 'bg-linear-to-b from-transparent via-white/30 to-transparent' 
-                      : 'bg-linear-to-b from-transparent via-gray-300/60 to-transparent'
-                    }
-                  `} 
-                />
-              </div>
-
-              {/* Theme toggle */}
-              <button
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-                className={`
-                  relative p-2.5 rounded-full transition-all duration-300
-                  ${isDark 
-                    ? 'bg-linear-to-br from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/30 hover:to-purple-500/30 text-indigo-200' 
-                    : 'bg-linear-to-br from-amber-100 to-orange-100 hover:from-amber-200 hover:to-orange-200 text-amber-600'
-                  }
-                  hover:shadow-lg
-                  active:scale-95 hover:scale-105
-                `}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+                className="ml-1 md:ml-2 pl-1 md:pl-2 border-l border-neutral-300/20 dark:border-neutral-700/40"
               >
-                <div className="relative w-4 h-4">
-                  <Sun 
-                    size={16} 
-                    strokeWidth={2.5}
-                    className={`absolute inset-0 transition-all duration-500 ${isDark ? 'opacity-0 rotate-180 scale-50' : 'opacity-100 rotate-0 scale-100'}`}
-                  />
-                  <Moon 
-                    size={16} 
-                    strokeWidth={2.5}
-                    className={`absolute inset-0 transition-all duration-500 ${isDark ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-180 scale-50'}`}
-                  />
-                </div>
-              </button>
+                <motion.button
+                  whileHover={{ scale: 1.05, rotate: 180 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggleTheme}
+                  className={`
+                    p-2 md:p-2.5 rounded-full transition-all duration-500
+                    ${isDark 
+                      ? 'bg-white/10 text-yellow-300 hover:bg-white/15' 
+                      : 'bg-black/5 text-neutral-700 hover:bg-black/10'
+                    }
+                  `}
+                  aria-label="Toggle theme"
+                >
+                  <AnimatePresence mode="wait">
+                    {isDark ? (
+                      <motion.div
+                        key="sun"
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Sun size={16} strokeWidth={2.5} />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="moon"
+                        initial={{ rotate: 90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: -90, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Moon size={16} strokeWidth={2.5} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </motion.div>
             </div>
-          </div>
-
-          {/* Depth shadow */}
-          <div 
-            className={`
-              absolute -bottom-2 left-4 right-4 h-6
-              ${isDark ? 'bg-black/30' : 'bg-gray-400/20'}
-              rounded-full blur-xl -z-10
-              transition-opacity duration-500
-              ${scrolled ? 'opacity-100' : 'opacity-60'}
-            `}
-          />
+          </motion.div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
