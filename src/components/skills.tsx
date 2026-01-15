@@ -1,8 +1,15 @@
 "use client";
 
+import { useRef, useEffect } from 'react';
 import { InfiniteSlider } from "@/components/ui/infinite-slider";
 import { cn } from "@/lib/utils";
 import Container from "@/components/common/Container";
+import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PageBoundaries, SectionLabel, RegistrationMark, GridLine } from '@/components/ui/TechnicalMarks';
+
+gsap.registerPlugin(ScrollTrigger);
 
 type Logo = {
   src: string;
@@ -85,7 +92,7 @@ function LogoCloud({ className, logos, ...props }: LogoCloudProps) {
     <div
       {...props}
       className={cn(
-        "overflow-hidden py-4 mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]",
+        "overflow-hidden py-4 mask-[linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]",
         className
       )}
     >
@@ -115,30 +122,88 @@ function LogoCloud({ className, logos, ...props }: LogoCloudProps) {
 }
 
 export default function Skills() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current || !contentRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        contentRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: contentRef.current,
+            start: 'top 90%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="relative -mt-8 pb-3 bg-white dark:bg-zinc-950 transition-colors duration-500">
-      {/* Page Boundaries - Thin vertical lines on large screens only */}
+    <section ref={sectionRef} className="relative py-4 md:py-6 bg-white dark:bg-zinc-950 transition-colors duration-500 overflow-hidden">
+      {/* Page Boundaries */}
+      <PageBoundaries />
+
+      {/* Horizontal grid lines */}
+      <GridLine orientation="horizontal" position="top-0 left-0 right-0" delay={0.2} />
+      <GridLine orientation="horizontal" position="bottom-0 left-0 right-0" delay={0.3} />
+
+      {/* Registration marks at edges */}
       <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-225 -translate-x-1/2 pointer-events-none">
-        <div className="absolute left-0 top-0 bottom-0 w-px bg-neutral-200/60 dark:bg-neutral-800/60"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-px bg-neutral-200/60 dark:bg-neutral-800/60"></div>
+        <RegistrationMark className="absolute left-1/4 top-1/2 -translate-y-1/2" size={8} delay={0.4} />
+        <RegistrationMark className="absolute right-1/4 top-1/2 -translate-y-1/2" size={8} delay={0.5} />
       </div>
 
       {/* Content */}
       <Container className="relative z-10 w-full md:w-3xl md:mx-auto px-6">
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="h-px w-16 bg-linear-to-r from-transparent to-neutral-300 dark:to-neutral-700"></div>
-            <h2 className="liquid-metal-text text-sm md:text-base font-bold uppercase tracking-widest" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.15em' }}>
-              Tech Stack
-            </h2>
-            <div className="h-px w-16 bg-linear-to-l from-transparent to-neutral-300 dark:to-neutral-700"></div>
+        <div ref={contentRef}>
+          <div className="text-center mb-4">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="flex items-center justify-center gap-4 mb-2"
+            >
+              <div className="flex items-center gap-2">
+                <RegistrationMark size={6} delay={0.2} />
+                <div className="h-px w-12 bg-neutral-300 dark:bg-neutral-700" />
+              </div>
+              <h2 
+                className="text-xs md:text-sm font-bold uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-500" 
+                style={{ fontFamily: 'var(--font-inter)' }}
+              >
+                Tech Stack
+              </h2>
+              <div className="flex items-center gap-2">
+                <div className="h-px w-12 bg-neutral-300 dark:bg-neutral-700" />
+                <RegistrationMark size={6} delay={0.3} />
+              </div>
+            </motion.div>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-sm md:text-base text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed" 
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              Building modern, scalable applications with industry-leading frameworks
+            </motion.p>
           </div>
-          <p className="text-sm md:text-base text-slate-600 dark:text-neutral-300 max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: 'var(--font-inter)' }}>
-            Building modern, scalable applications with industry-leading frameworks
-          </p>
-        </div>
 
-        <LogoCloud logos={techStackLogos} />
+          <LogoCloud logos={techStackLogos} />
+        </div>
       </Container>
     </section>
   );

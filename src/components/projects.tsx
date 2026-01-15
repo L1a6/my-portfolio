@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { PageBoundaries, SectionLabel, CropMark, RegistrationMark, GridLine } from '@/components/ui/TechnicalMarks';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -97,6 +98,8 @@ export default function Projects() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const textRevealRef = useRef<HTMLDivElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (headerRef.current) {
@@ -111,6 +114,45 @@ export default function Projects() {
           scrollTrigger: {
             trigger: headerRef.current,
             start: 'top 80%',
+          },
+        }
+      );
+    }
+
+    // Text reveal animation - matching About section
+    if (textRevealRef.current) {
+      const words = textRevealRef.current.querySelectorAll('.word-reveal');
+      gsap.fromTo(
+        words,
+        { y: '100%', opacity: 0 },
+        {
+          y: '0%',
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.08,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: textRevealRef.current,
+            start: 'top 85%',
+            toggleActions: 'play none none reverse',
+          },
+        }
+      );
+    }
+
+    // Line expand animation
+    if (lineRef.current) {
+      gsap.fromTo(
+        lineRef.current,
+        { scaleX: 0 },
+        {
+          scaleX: 1,
+          duration: 1.2,
+          ease: 'power3.inOut',
+          scrollTrigger: {
+            trigger: lineRef.current,
+            start: 'top 90%',
+            toggleActions: 'play none none reverse',
           },
         }
       );
@@ -156,23 +198,54 @@ export default function Projects() {
   }, [activeIndex]);
 
   return (
-    <section ref={sectionRef} className="relative -mt-8 pt-12 pb-16 md:py-20 bg-white dark:bg-[#0a0a0f] transition-colors duration-500">
+    <section ref={sectionRef} className="relative pt-8 pb-12 md:py-16 bg-white dark:bg-zinc-950 transition-colors duration-500 overflow-hidden">
+      {/* Page Boundaries */}
+      <PageBoundaries />
+
+      {/* Horizontal grid lines */}
+      <GridLine orientation="horizontal" position="top-0 left-0 right-0" delay={0.1} />
+
+      {/* Technical crop marks around section */}
       <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-225 -translate-x-1/2 pointer-events-none">
-        <div className="absolute left-0 top-0 bottom-0 w-px bg-neutral-200/60 dark:bg-neutral-800/60"></div>
-        <div className="absolute right-0 top-0 bottom-0 w-px bg-neutral-200/60 dark:bg-neutral-800/60"></div>
+        <CropMark position="top-left" size={20} className="top-6 left-4" delay={0.2} />
+        <CropMark position="top-right" size={20} className="top-6 right-4" delay={0.25} />
+        <CropMark position="bottom-left" size={20} className="bottom-6 left-4" delay={0.3} />
+        <CropMark position="bottom-right" size={20} className="bottom-6 right-4" delay={0.35} />
       </div>
 
       <Container className="relative z-10 w-full md:w-3xl md:mx-auto px-6">
         <div 
           ref={headerRef}
-          className="mb-8 md:mb-10"
+          className="mb-6 md:mb-8"
         >
-          <h2 
-            className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-2 tracking-tight" 
-            style={{ fontFamily: 'var(--font-inter)' }}
+          {/* Section label with technical marks */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-4"
           >
-            Featured Projects
-          </h2>
+            <SectionLabel number="02">Featured Work</SectionLabel>
+          </motion.div>
+
+          {/* Heading with Word Reveal - MATCHING ABOUT SECTION */}
+          <div ref={textRevealRef} className="overflow-hidden mb-4">
+            <h2 
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white tracking-tight leading-[1.15]" 
+              style={{ fontFamily: 'var(--font-inter)' }}
+            >
+              <span className="word-reveal inline-block">Featured</span>{' '}
+              <span className="word-reveal inline-block text-neutral-400 dark:text-neutral-600">Projects.</span>
+            </h2>
+          </div>
+          
+          {/* Expanding line */}
+          <div 
+            ref={lineRef}
+            className="w-full h-px bg-neutral-200 dark:bg-neutral-800 mb-4 origin-left"
+          />
+          
           <p 
             className="text-xs md:text-sm text-neutral-500 dark:text-neutral-400 font-normal tracking-wide" 
             style={{ fontFamily: 'var(--font-inter)' }}
@@ -186,9 +259,7 @@ export default function Projects() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
-          className={`relative rounded-2xl overflow-hidden shadow-2xl shadow-neutral-300/50 dark:shadow-black/50 transition-all duration-1000 ease-in-out ${
-            activeIndex >= 0 ? 'h-[680px] md:h-[480px]' : 'h-[520px] md:h-[480px]'
-          }`}
+          className="relative rounded-xl overflow-hidden shadow-xl shadow-neutral-200/50 dark:shadow-black/40 h-112.5 md:h-105"
         >
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
@@ -208,7 +279,7 @@ export default function Projects() {
             </div>
           </motion.div>
 
-          <div className="flex md:flex-row flex-col h-full gap-[1px] bg-neutral-300 dark:bg-neutral-700">
+          <div className="flex md:flex-row flex-col h-full gap-px bg-neutral-300 dark:bg-neutral-700">
             <AnimatePresence mode="sync">
               {projects.map((project, index) => {
                 const isActive = activeIndex === index;
@@ -238,15 +309,14 @@ export default function Projects() {
                     tabIndex={0}
                     aria-label={`View ${project.title} details`}
                     aria-expanded={isActive}
-                    className={`relative cursor-pointer bg-cover bg-center overflow-hidden transition-all duration-1000 ease-in-out
+                    className={`relative cursor-pointer bg-cover bg-center overflow-hidden transition-all duration-700 ease-out
                       ${isActive 
-                        ? 'flex-[60] md:flex-[2.8] grayscale-0 brightness-100' 
-                        : 'flex-[0.15] md:flex-1 grayscale-[0.3] brightness-[0.85] hover:grayscale-0 hover:brightness-[0.95]'
+                        ? 'flex-4 md:flex-3 grayscale-0 brightness-100' 
+                        : 'flex-1 md:flex-1 grayscale-[0.2] brightness-90 hover:grayscale-0 hover:brightness-100'
                       }
                     `}
                     style={{
                       backgroundImage: `url(${project.image})`,
-                      minHeight: '120px',
                     }}
                   >
                     <div 

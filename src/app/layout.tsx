@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/components/Providers";
+import Navbar from "@/components/navbar";
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -33,7 +34,10 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased bg-white dark:bg-zinc-950 text-neutral-900 dark:text-neutral-50 transition-colors duration-500">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
